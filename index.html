@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complejo Sanitario Dr. Favaloro Dr. Molas - Calculadora NAS</title>
+    <style>
+        :root {
+            --primary: #0056a6;
+            --primary-light: #e8f4fd;
+            --secondary: #d32f2f;
+            --success: #2e7d32;
+            --warning: #f57c00;
+            --text: #333;
+            --text-light: #666;
+            --background: #f5f5f5;
+            --white: #ffffff;
+            --border: #e0e0e0;
+            --shadow: 0 2px 5px rgba(0,0,0,0.1);
+            --shadow-hover: 0 5px 15px rgba(0,0,0,0.15);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 25px;
+            background-color: var(--primary);
+            color: var(--white);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--white);
+            opacity: 0.95;
+        }
+        
+        h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 8px;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .patient-info-section {
+            background-color: var(--white);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+        
+        .form-group input,
+        .form-group select {
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(0,86,166,0.1);
+        }
+        
+        .form-section {
+            background-color: var(--white);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+        
+        .form-section:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .item-group {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background-color: var(--white);
+        }
+        
+        .item-group.disabled {
+            opacity: 0.5;
+            background-color: #f9f9f9;
+            pointer-events: none;
+        }
+        
+        .item-title {
+            font-weight: bold;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+            color: var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .item-points {
+            background-color: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .item-description {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            margin-bottom: 15px;
+            line-height: 1.5;
+            background-color: #f8f9fa;
+            padding: 12px;
+            border-radius: 5px;
+            border-left: 4px solid var(--primary-light);
+        }
+        
+        .radio-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+        
+        .radio-option:hover {
+            background-color: var(--primary-light);
+            border-color: var(--primary);
+        }
+        
+        .radio-option input {
+            margin: 0;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .radio-option input:checked + span {
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .radio-option.selected {
+            background-color: var(--primary-light);
+            border-color: var(--primary);
+        }
+        
+        .results-section {
+            background-color: var(--primary-light);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 20px;
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #d0e8ff;
+            font-size: 1.1rem;
+        }
+        
+        .result-value {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        
+        .classification {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+        
+        .classification-title {
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+        
+        #patientClassification {
+            font-size: 1.1rem;
+            color: var(--success);
+            font-weight: bold;
+        }
+        
+        .category-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px dashed var(--border);
+        }
+        
+        .summary-section {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin-top: 30px;
+        }
+        
+        .summary-content {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 15px;
+            line-height: 1.4;
+        }
+        
+        .btn-copy {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 25px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-copy:hover {
+            background-color: #004080;
+            transform: scale(1.05);
+        }
+        
+        .btn-copy:active {
+            transform: scale(0.95);
+        }
+        
+        .btn-copy.copied {
+            background-color: var(--success);
+        }
+        
+        .reset-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 12px 30px;
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .reset-btn:hover {
+            background-color: #b71c1c;
+            transform: scale(1.05);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 25px;
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.3rem;
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            border-top: 4px solid var(--primary);
+        }
+        
+        .datetime-input {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .datetime-input input {
+            flex: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .results-section {
+                position: static;
+                order: 2;
+            }
+            
+            .form-section {
+                order: 1;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            h2 {
+                font-size: 1.4rem;
+            }
+            
+            .radio-group {
+                flex-direction: column;
+            }
+            
+            .radio-option {
+                width: 100%;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .datetime-input {
+                flex-direction: column;
+            }
+        }
+        
+        @media (min-width: 992px) {
+            .container {
+                flex-direction: row;
+            }
+            
+            .form-section {
+                flex: 2;
+            }
+            
+            .results-section {
+                flex: 1;
+                height: fit-content;
+            }
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-low { background-color: #4caf50; }
+        .status-medium { background-color: #ff9800; }
+        .status-high { background-color: #f44336; }
+        .status-very-high { background-color: #d32f2f; }
+        
+        .selected-items-list {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .selected-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .selected-item:last-child {
+            border-bottom: none;
+        }
+        
+        .selected-item-name {
+            font-weight: 500;
+        }
+        
+        .selected-item-points {
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .age-input {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .age-input input {
+            flex: 1;
+        }
+        
+        .age-input select {
+            width: 120px;
+        }
+        
+        .reference-table {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-radius: 8px;
+            border-left: 4px solid var(--success);
+            font-size: 0.85rem;
+        }
+        
+        .reference-table table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        .reference-table th,
+        .reference-table td {
+            padding: 8px;
+            text-align: center;
+            border-bottom: 1px solid #c8e6c9;
+        }
+        
+        .reference-table th {
+            background-color: #a5d6a7;
+            color: #1b5e20;
+            font-weight: bold;
+        }
+        
+        .reference-table tr:hover {
+            background-color: #c8e6c9;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Complejo Sanitario Dr. Favaloro Dr. Molas</h1>
+        <h2>Calculadora de NAS (Nursing Activities Score)</h2>
+    </header>
+    
+    <section class="patient-info-section">
+        <h3>Datos del Paciente</h3>
+        <div class="info-grid">
+            <div class="form-group">
+                <label for="patientName">Nombre y Apellido:</label>
+                <input type="text" id="patientName" placeholder="Ingrese nombre completo">
+            </div>
+            
+            <div class="form-group">
+                <label for="patientAge">Edad:</label>
+                <div class="age-input">
+                    <input type="number" id="patientAge" placeholder="Edad" min="0" max="120">
+                    <select id="ageUnit">
+                        <option value="años">años</option>
+                        <option value="meses">meses</option>
+                        <option value="días">días</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="patientHC">H.C. / DNI:</label>
+                <input type="text" id="patientHC" placeholder="Ej: HC12345 o 12345678">
+            </div>
+            
+            <div class="form-group">
+                <label for="patientService">Servicio:</label>
+                <select id="patientService">
+                    <option value="">Seleccione servicio</option>
+                    <option value="UCIA">UCIA - Unidad de Cuidados Intensivos Adultos</option>
+                    <option value="UCPA">UCPA - Unidad de Cuidados Progresivos Adultos</option>
+                    <option value="UCIP">UCIP - Unidad de Cuidados Intensivos Pediátricos</option>
+                    <option value="UCIN">UCIN - Unidad de Cuidados Intensivos Neonatales</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="patientBed">Cama:</label>
+                <input type="text" id="patientBed" placeholder="Ej: Cama 12">
+            </div>
+            
+            <div class="form-group">
+                <label for="nasDate">Fecha de evaluación NAS:</label>
+                <input type="date" id="nasDate">
+            </div>
+            
+            <div class="form-group">
+                <label for="nasTime">Hora de evaluación NAS:</label>
+                <div class="datetime-input">
+                    <input type="time" id="nasTime">
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <div class="container">
+        <section class="form-section">
+            <h3>MONITORIZACIÓN Y VALORACIÓN UC</h3>
+            
+            <div class="item-group" id="group1a">
+                <div class="item-title">
+                    <span>1a. Signos vitales horarios y registro básico</span>
+                    <span class="item-points">4.5 pts</span>
+                </div>
+                <div class="item-description">
+                    Signos vitales horarios. Registro y cálculo del balance de fluidos. Pacientes que por su condición requiere de monitoreo continua no invasivo (básico) con registro horario, cálculos de balance de líquidos, asistencia en la alimentación por cualquier causa. Registro de escalas de valoración de enfermería: RASS, CamICU, Barthel, Dawthon, Braden.
+                </div>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="item1" value="0" checked> No aplica
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="item1" value="4.5"> Seleccionar
+                    </label>
+                </div>
+            </div>
+            
+            <div class="item-group" id="group1b">
+                <div class="item-title">
+                    <span>1b. Observación continua 2 horas</span>
+                    <span class="item-points">12.1 pts</span>
+                </div>
+                <div class="item-description">
+                    Requiere observación continua o activa de 2 horas durante algún turno por su complejidad, severidad o inestabilidad hemodinámica que requiera de monitorización continua invasiva; paciente con alteraciones como delirium o excitación, desorientación, dependencia funcional. Asistencia en procedimientos específicos como los mencionados en el ítem 22 incluida la asistencia en la alimentación por más tiempo de lo normal.
+                </div>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="item1b" value="0" checked> No aplica
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="item1b" value="12.1"> Seleccionar
+                    </label>
+                </div>
+            </div>
+            
+            <div class="item-group" id="group1c">
+                <div class="item-title">
+                    <span>1c. Observación continua 4+ horas</span>
+                    <span class="item-points">19.6 pts</span>
+                </div>
+                <div class="item-description">
+                    Requiere observación continua o activa de 4 horas o más durante algún turno, por su complejidad, severidad o inestabilidad hemodinámica que requiera de monitorización continua invasiva; Pacientes con APACHE > 10 SOFA > 3 RASS +4 Ó -4. Cuidados de posoperatorio inmediato cirugías complejas: cardiacas, trasplantes, neurocirugías complejas.
+                </div>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="item1c" value="0" checked> No aplica
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="item1c" value="19.6"> Seleccionar
+                    </label>
+                </div>
+            </div>
+            
+            <div class="item-group">
+                <div class="item-title">
+                    <span>2. Procedimientos de laboratorio, bioquímica y microbiología</span>
+                    <span class="item-points">4.3 pts</span>
+                </div>
+                <div class="item-description">
+                    Paciente que es sometido a cualquier examen bioquímico, microbiológico bien sea por punción o toma de muestra por catéter central, SV, glucometría; siempre que sean tomados por el Profesional de Enfermería.
+                </div>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="item2" value="0" checked> No aplica
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="item2" value="4.3"> Seleccionar
+                    </label>
+                </div>
+            </div>
+            
+            <div class="item-group">
+                <div class="item-title">
+                    <span>3. Administración de medicación (excepto vasoactivos)</span>
+                    <span class="item-points">5.6 pts</span>
+                </div>
+                <div class="item-description">
+                    Se refiere a la administración de cualquier clase de medicamento sin importar vía o dosis. Dentro de éste ítem se excluye la administración de medicamentos Vasoactivos.
+                </div>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="item3" value="0" checked> No aplica
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="item3" value="5.6"> Seleccionar
+                    </label>
+                </div>
+            </div>
+            
+            <h3>PROCEDIMIENTOS DE HIGIENE</h3>
+            
+            <div class="item-group" id="group4a">
+                <div class="item-title">
+                    <span>4a. Procedimientos higiénicos básicos</span>
+                    <span class="item-points">4.1 pts</span>
+                </div>
+                <div class="item-description">
+                    Realización de procedimientos higiénicos. Pacientes que requieran de cualquier tipo de asistencia en la realización de su higiene personal, bien sea en cama o asistencia en la ducha. Se incluye la realización de curación de catéteres intra vasculares (centrales o periféricos) una vez durante el turno. Se considera pacientes con cualquier tipo de aislamiento.
+                </div>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="item4" value="0" checked> No aplica
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="item4" value="4.1"> Seleccionar
+                    </label>
+                </div>
+            </div>
+            
+            <div class="item-group" id="group4b">
+                <div class="item-title">
+                    <span>4b. Higiene > 2 horas</span>
+                    <span class="item-points">16.5 pts</span>
+                </div>
+                <div class="item-description">
+                    Realización de procedimientos de higiene durante más de 2 horas en algún turno. Pacientes que requieran de asistencia en la realización de higiene personal con cambio de ropa de cama en dos oportunidades en algún turno, por cualquier razón (sangrado, diaforesis, incontinencia, diarrea, vómitos, cura de heridas complejas). Se incluye la realización de curación de catéteres intra vasculares dos veces por turno. Se considera pacientes con cualquier tipo de aislamiento.
+                </div>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="item4b" value="0" checked> No aplica
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="item4b" value="16.5"> Seleccionar
+                    </label>
+                </div>
+            </div>
+            
+            <div class="item-group" id="group4c">
+                <div class="item-title">
+                    <span>4c. Higiene > 4 horas</span>
+                    <span class="item-points">20.0 pts</span>
+                </div>
+                <div class="item-description">
+                    Realización de procedimientos de higiene durante más de 4 horas en algún turno. Pacientes que requieran de asistencia en la realización de higiene personal con cambio de ropa de cama en más de tres oportunidades en algún turno, por cualquier razón (sangrado, diaforesis, incontinencia, diarrea, vómitos, cura de heridas complejas). Se incluye la realización de curación de catéteres intra vasculares. Se considera pacientes con cualquier tipo de aislamiento.
+                </div>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="item4c" value="0" checked> No aplica
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="item4c" value="20.0"> Seleccionar
+                    </label>
+                </div>
+            </div>
+            
+            <div class="item-group">
+                <div class="item-title">
+                    <span>5. Cuidados de drenaje</span>
+                    <span class="item-points">1.8 pts</span>
+                </div>
+                <div class="item-description">
+                    Cuidados al paciente que tenga cualquier tipo de drenaje como son: drenajes pasivos como tubos de tórax, Tubos de mediastino, Drenaje de Blake, Sonda vesical y drenajes activos como hemosuctor o aspirofusor. Se exceptúa SNG.
+                </div>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="item5" value="0" checked> No aplica
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="item5" value="1.8"> Seleccionar
+                    </label>
+                </div>
+            </div>
+            
+            <h3>MOVILIZACIÓN Y CUIDADOS POSICIONALES</h3>
+            
+            <div class="item-group" id="group6a">
+                <div class="item-title">
+                    <span>6a. Movilización cada 2-4 horas (1 enfermera)</span>
+                    <span class="item-points">5.5 pts</span>
+                </div>
+                <div class="item-description">
+                    Realización de procedimientos cada 2-4 horas. Pacientes que requieran de cambio de posición, paso de cama a silla o de silla a cama, bipedestación, por 1 Enfermera durante el turno.
+                </div>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="item6" value="0" checked> No aplica
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="item6" value="5.5"> Seleccionar
+                    </label>
+                </div>
+            </div>
+            
+            <div class="item-group" id="group6b">
+                <div class="item-title">
+                    <span>6b. Movilización más de 3 veces por turno (2 enfermeras)</span>
+                    <span class="item-points">12.4 pts</span>
+                </div>
+                <div class="item-description">
+                    Realización de procedimientos más de 3 veces por turno con 2 Enfermeras. Pacientes que requieran de cambios de posición paso de cama a silla o de silla a cama, sedestacion o bipedestación, uso de grúa elevadora, por 2 Enfermeras durante el turno.
+                </div>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="item6b" value="0" checked> No aplica
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="item6b" value="12.4"> Seleccionar
+                    </label>
+                </div>
+            </div>
+            
+            <div class="item-group" id="group6c">
+                <div class="item-title">
+                    <span>6c. Movilización (3+ enfermeras)</span>
+                    <span class="item-points">17.0 pts</span>
+                </div>
+                <div class="item-description">
+                    Realización de procedimientos con 3 o más Enfermeras con cualquier frecuencia. Pacientes que requieran de cambios de posición, paso de cama a silla o de silla a cama, sedestación o bipedestación, movilización del paciente en equipo, por 3 o más Enfermeras por turno.
+                </div>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="item6c" value="0" checked> No aplica
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="item6c" value="17.0"> Seleccionar
+                    </label>
+                </div>
+            </div>
+            
+            <h3>APOYO Y CUIDADO DE FAMILIARES Y PACIENTES</h3>
+            
+            <div class="item-group" id="group7a">
+                <div class="item-title">
+                    <span>7a. Apoyo familiar al menos 1 hora</span>
+                    <span class="item-points">4.0 pts</span>
+                </div>
+                <div class="item-description">
+                    Apoyo y cuidado de familiares al menos 1 hora en alguno de los turnos. Pacientes y familiares a quienes se les dedica por lo menos una hora en brindar información, bien sea de ingreso a la Unidad de Cuidados Intensivos o de Enfermería durante la visita para mitigar angustias o resolver inquietudes.
+                </div>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="item7" value="0" checked> No aplica
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="item7" value="4.0"> Seleccionar
+                    </label>
+                </div>
+            </div>
+            
+            <div class="item-group" id="group7b">
+                <div class="item-title">
+                    <span>7b. Apoyo familiar al menos 3 horas en un turno (no sumado en 4 turnos)</span>
+                    <span class="item-points">32.0 pts</span>
+                </div>
+                <div class="item-description">
+                    Apoyo y cuidado de familiares al menos 3 horas en un turno (no sumado en 4 turnos). Pacientes y familiares a quienes se les dedica por lo menos tres horas en brindar información, bien sea de ingreso a la Unidad de Cuidados intensivos o de Enfermería durante la visita para mitigar angustias o resolver inquietudes. Por circunstancias especiales como: familiares demandantes, pacientes ansiosos, proceso de duelo ante la muerte, pacientes con cualquier tipo de limitación visual o auditiva y con diferencias idiomáticas.
+                </div>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="item7b" value="0" checked> No aplica
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="item7b" value="32.0"> Seleccionar
+                    </label>
+                </div>
+            </div>
+            
+            <h3>TAREAS ADMINISTRATIVAS Y DE ORGANIZACIÓN</h3>
+            
+            <div class="item-group" id="group8a">
+                <div class="item-title">
+                    <span>8a. Tareas administrativas rutinarias</span>
+                    <span class="item-points">4.2 pts</span>
+                </div>
+                <div class="item-description">
+                    Tareas rutinarias. Dentro de las actividades rutinarias se incluyen: Pase de guardia, revisión de Historias clínicas, realización de Bundles y escalas de enfermería, que no demanden más del tiempo normal establecido.
+                </div>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="item8" value="0" checked> No aplica
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="item8" value="4.2"> Seleccionar
+                    </label>
+                </div>
+            </div>
+            
+            <div class="item-group" id="group8b">
+                <div class="item-title">
+                    <span>8b. Tareas administrativas 2 horas</span>
+                    <span class="item-points">23.2 pts</span>
+                </div>
+                <div class="item-description">
+                    Tareas administrativas que requieran dedicación plena durante 2 horas en alguno de los turnos. En este ítem se incluyen las anteriores actividades y se le adicionan las siguientes actividades: Ingreso y egreso de pacientes, actualización de indicaciones médicas realización de check list, protocolos de investigación.
+                </div>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="item8b" value="0" checked> No aplica
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="item8b" value="23.2"> Seleccionar
+                    </label>
+                </div>
+            </div>
+            
+            <div class="item-group" id="group8c">
+                <div class="item-title">
+                    <span>8c. Tareas administrativas 4+ horas</span>
+                    <span class="item-points">30.0 pts</span>
+                </div>
+                <div class="item-description">
+                    Tareas administrativas que requieran dedicación plena durante 4 horas en algún turno. Preparación de la unidad con los insumos y equipos para el cuidado del paciente en: POP inmediato de cirugía cardiovascular, Cardioversión, Edema pulmonar, Falla cardiaca descompensada. Preparación de óbitos. Procesos de donación.
+                </div>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="item8c" value="0" checked> No aplica
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="item8c" value="30.0"> Seleccionar
+                    </label>
+                </div>
+            </div>
+            
+            <div class="category-section">
+                <h3>SOPORTE VENTILATORIO</h3>
+                
+                <div class="item-group">
+                    <div class="item-title">
+                        <span>9. Soporte respiratorio</span>
+                        <span class="item-points">1.4 pts</span>
+                    </div>
+                    <div class="item-description">
+                        Pacientes que requieran de Oxígeno suplementario desde cánula nasal hasta VMNI (Ventilación mecánica No Invasiva).
+                    </div>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="item9" value="0" checked> No aplica
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="item9" value="1.4"> Seleccionar
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="item-group">
+                    <div class="item-title">
+                        <span>10. Cuidados de vía aérea artificial</span>
+                        <span class="item-points">1.8 pts</span>
+                    </div>
+                    <div class="item-description">
+                        Pacientes que por su condición requirieron de Ventilación mecánica Invasiva bien sea por Tubo endotraqueal o cánula de traqueotomía y requieran cuidados de estos dispositivos.
+                    </div>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="item10" value="0" checked> No aplica
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="item10" value="1.8"> Seleccionar
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="item-group">
+                    <div class="item-title">
+                        <span>11. Tratamiento para mejorar función pulmonar</span>
+                        <span class="item-points">4.4 pts</span>
+                    </div>
+                    <div class="item-description">
+                        Tratamiento para mejorar la función pulmonar: fisioterapia respiratoria, aspiración endotraqueal, terapia inhalatoria.
+                    </div>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="item11" value="0" checked> No aplica
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="item11" value="4.4"> Seleccionar
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="category-section">
+                <h3>SOPORTE CARDIOVASCULAR</h3>
+                
+                <div class="item-group">
+                    <div class="item-title">
+                        <span>12. Medicación vasoactiva</span>
+                        <span class="item-points">1.2 pts</span>
+                    </div>
+                    <div class="item-description">
+                        Pacientes que por su condición requieren el inicio de medicamentos Vasopresores, Vasodilatadores, Inotrópicos. Independientemente del tipo y la dosis a la cual se empleen.
+                    </div>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="item12" value="0" checked> No aplica
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="item12" value="1.2"> Seleccionar
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="item-group">
+                    <div class="item-title">
+                        <span>13. Reposición intravenosa de altas dosis de fluidos</span>
+                        <span class="item-points">2.5 pts</span>
+                    </div>
+                    <div class="item-description">
+                        Pacientes que requieren de la administración de líquidos endovenosos a altas dosis, reanimación Hematológica (trasfusión de hemoderivados), reanimación hídrica en POP inmediato de cirugía cardiovascular, Trasplante Renal o Cardiaco.
+                    </div>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="item13" value="0" checked> No aplica
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="item13" value="2.5"> Seleccionar
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="item-group">
+                    <div class="item-title">
+                        <span>14. Monitorización de aurícula izquierda</span>
+                        <span class="item-points">1.7 pts</span>
+                    </div>
+                    <div class="item-description">
+                        Pacientes que por su condición requiere de: Catéter de Arteria Pulmonar (Swan ganz), BCIAo (Balón de Contrapulsación Intra aórtico), ECLS (soporte vital extracorpóreo), MCP externo.
+                    </div>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="item14" value="0" checked> No aplica
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="item14" value="1.7"> Seleccionar
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="item-group">
+                    <div class="item-title">
+                        <span>15. Resucitación cardiopulmonar</span>
+                        <span class="item-points">7.1 pts</span>
+                    </div>
+                    <div class="item-description">
+                        Resucitación cardiopulmonar tras Paro cardio/respiratorio. Pacientes en los cuales se requirió de la realización de maniobras de RCCP en las últimas 24 horas.
+                    </div>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="item15" value="0" checked> No aplica
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="item15" value="7.1"> Seleccionar
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="category-section">
+                <h3>SOPORTE RENAL</h3>
+                
+                <div class="item-group">
+                    <div class="item-title">
+                        <span>16. Técnicas de hemofiltración</span>
+                        <span class="item-points">7.7 pts</span>
+                    </div>
+                    <div class="item-description">
+                        Pacientes en quienes se requiere de Técnicas de diálisis, Plasmaféresis y TRRC (Terapias de Reemplazo Renal Continua). Solo si es realizado por enfermería.
+                    </div>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="item16" value="0" checked> No aplica
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="item16" value="7.7"> Seleccionar
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="item-group">
+                    <div class="item-title">
+                        <span>17. Mediciones cuantitativas de orina</span>
+                        <span class="item-points">7.0 pts</span>
+                    </div>
+                    <div class="item-description">
+                        Pacientes que requieren cuantificación de orina por cualquier método (espontáneo, cateterismo vesical intermitente, sonda vesical a permanencia) realización de balance de líquidos administrados y eliminados y cálculo del gasto urinario.
+                    </div>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="item17" value="0" checked> No aplica
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="item17" value="7.0"> Seleccionar
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="category-section">
+                <h3>SOPORTE NEUROLÓGICO</h3>
+                
+                <div class="item-group">
+                    <div class="item-title">
+                        <span>18. Soporte de presión intracraneal PIC + PPC</span>
+                        <span class="item-points">1.6 pts</span>
+                    </div>
+                    <div class="item-description">
+                        Paciente que requiere medición de presión intracraneal. Control de drenaje ventricular externo.
+                    </div>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="item18" value="0" checked> No aplica
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="item18" value="1.6"> Seleccionar
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="category-section">
+                <h3>SOPORTE METABÓLICO</h3>
+                
+                <div class="item-group">
+                    <div class="item-title">
+                        <span>19. Tratamiento de complicaciones metabólicas</span>
+                        <span class="item-points">1.3 pts</span>
+                    </div>
+                    <div class="item-description">
+                        Pacientes que requieren corrección de solo acidosis o alcalosis metabólica, con la administración de bicarbonato de sodio.
+                    </div>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="item19" value="0" checked> No aplica
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="item19" value="1.3"> Seleccionar
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="item-group">
+                    <div class="item-title">
+                        <span>20. Nutrición parenteral</span>
+                        <span class="item-points">2.8 pts</span>
+                    </div>
+                    <div class="item-description">
+                        Pacientes que requieres soporte Nutricional parenteral Central o Periférica, sin importar dosis.
+                    </div>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="item20" value="0" checked> No aplica
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="item20" value="2.8"> Seleccionar
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="item-group">
+                    <div class="item-title">
+                        <span>21. Alimentación enteral</span>
+                        <span class="item-points">1.3 pts</span>
+                    </div>
+                    <div class="item-description">
+                        Pacientes que requieren soporte nutricional a través de sonda nasogástrica, gastrostomía, yeyunostomía.
+                    </div>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="item21" value="0" checked> No aplica
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="item21" value="1.3"> Seleccionar
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="category-section">
+                <h3>INTERVENCIONES Y PROCESOS PROPIOS DE LA UCI</h3>
+                
+                <div class="item-group">
+                    <div class="item-title">
+                        <span>22. Intervenciones específicas en UCI</span>
+                        <span class="item-points">2.8 pts</span>
+                    </div>
+                    <div class="item-description">
+                        Intervenciones específicas en la unidad de cuidados intensivos realizadas en las ultimas 24 hs. Pacientes que por su condición clínica requieren la colocación de cualquiera de los siguientes dispositivos: Marcapasos transvenoso ó transcutáneo, PICC (Catéter Central de Inserción periférica), Catéter Central, catéter de Arteria Pulmonar, Línea Arterial, inserción de catéter multipropósito, Cardioversión Monitorización no invasiva del gasto cardiaco (EV1000), revisión quirúrgica en la Unidad, endoscopia en la unidad, intubación endotraqueal.
+                    </div>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="item22" value="0" checked> No aplica
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="item22" value="2.8"> Seleccionar
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="item-group">
+                    <div class="item-title">
+                        <span>23. Intervenciones fuera de UCI</span>
+                        <span class="item-points">1.9 pts</span>
+                    </div>
+                    <div class="item-description">
+                        Intervenciones específicas fuera de la unidad de cuidados intensivos realizadas en las ultimas 24 hs. Traslado de paciente a Cirugía bien sea programada o de emergencia, procedimientos diagnósticos como son TAC, Resonancia. Que requieran del acompañamiento del Profesional de Enfermería.
+                    </div>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="item23" value="0" checked> No aplica
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="item23" value="1.9"> Seleccionar
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="reset-btn" onclick="resetAll()">Reiniciar Calculadora</button>
+        </section>
+        
+        <section class="results-section">
+            <h3>Resultados NAS</h3>
+            <div class="result-item">
+                <span>Puntaje Total NAS:</span>
+                <span class="result-value" id="totalScore">0.0</span>
+            </div>
+            
+            <div class="classification">
+                <div class="classification-title">Porcentaje NAS:</div>
+                <div id="percentageNAS">0.0%</div>
+            </div>
+            
+            <div class="classification">
+                <div class="classification-title">Horas de enfermería requeridas (24h):</div>
+                <div id="nursingHours">0.0 horas</div>
+            </div>
+            
+            <div class="classification">
+                <div class="classification-title">Clasificación del Paciente:</div>
+                <div id="patientClassification">
+                    <span class="status-indicator status-low"></span>
+                    Sin selección
+                </div>
+            </div>
+            
+            <div class="classification">
+                <div class="classification-title">Recomendación de dotación:</div>
+                <div id="staffingRecommendation">No calculado</div>
+            </div>
+            
+            <div class="selected-items-list">
+                <div class="classification-title">Ítems seleccionados:</div>
+                <div id="selectedItemsContainer">
+                    <div style="padding: 10px; text-align: center; color: var(--text-light);">
+                        No hay ítems seleccionados
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 25px; padding: 15px; background-color: #fff3cd; border-radius: 6px; border-left: 4px solid #ffc107;">
+                <div style="font-weight: bold; color: #856404; margin-bottom: 8px;">📊 Tabla de referencia NAS:</div>
+                <div style="font-size: 0.85rem; color: #856404;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr style="background-color: #ffe8b3;">
+                            <th style="padding: 5px;">Puntaje NAS</th>
+                            <th style="padding: 5px;">% NAS</th>
+                            <th style="padding: 5px;">Horas/24h</th>
+                            <th style="padding: 5px;">Dotación</th>
+                        </tr>
+                        <tr><td style="padding: 5px;">25</td><td>14.1%</td><td>3.4 h</td><td>1 enfermero para 4 pacientes</td></tr>
+                        <tr><td style="padding: 5px;">50</td><td>28.2%</td><td>6.8 h</td><td>1 enfermero para 2 pacientes</td></tr>
+                        <tr><td style="padding: 5px;">75</td><td>42.4%</td><td>10.2 h</td><td>1 enfermero para 1 paciente</td></tr>
+                        <tr><td style="padding: 5px;">100</td><td>56.5%</td><td>13.6 h</td><td>1 enfermero dedicado exclusivamente</td></tr>
+                        <tr><td style="padding: 5px;">150</td><td>84.7%</td><td>20.3 h</td><td>Requiere 1.5 enfermeros</td></tr>
+                    </table>
+                    <p style="margin-top: 8px; font-size: 0.8rem;"><strong>Nota:</strong> El porcentaje se calcula sobre el máximo teórico de 177 puntos.<br>Fórmula: %NAS = (Puntaje × 100) / 177 | Horas = (%NAS × 24) / 100</p>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <section class="summary-section">
+        <h3>Resumen de Evaluación NAS</h3>
+        <button class="btn-copy" onclick="copySummary()">Copiar Resumen</button>
+        <div class="summary-content" id="summaryContent">
+Cargando resumen...
+        </div>
+    </section>
+    
+    <footer>
+        Distel Diego®
+    </footer>
+
+    <script>
+        // Constante: Puntaje máximo teórico del NAS (suma de todos los ítems)
+        const MAX_NAS_SCORE = 177;
+        
+        // Definir grupos de exclusión mutua
+        const exclusionGroups = {
+            'item1': ['item1b', 'item1c'],
+            'item1b': ['item1', 'item1c'],
+            'item1c': ['item1', 'item1b'],
+            'item4': ['item4b', 'item4c'],
+            'item4b': ['item4', 'item4c'],
+            'item4c': ['item4', 'item4b'],
+            'item6': ['item6b', 'item6c'],
+            'item6b': ['item6', 'item6c'],
+            'item6c': ['item6', 'item6b'],
+            'item7': ['item7b'],
+            'item7b': ['item7'],
+            'item8': ['item8b', 'item8c'],
+            'item8b': ['item8', 'item8c'],
+            'item8c': ['item8', 'item8b']
+        };
+        
+        // Mapeo de nombres de ítems
+        const itemNamesMap = {
+            'item1': '1a. Signos vitales horarios y registro básico',
+            'item1b': '1b. Observación continua 2 horas',
+            'item1c': '1c. Observación continua 4+ horas',
+            'item2': '2. Procedimientos de laboratorio, bioquímica y microbiología',
+            'item3': '3. Administración de medicación (excepto vasoactivos)',
+            'item4': '4a. Procedimientos higiénicos básicos',
+            'item4b': '4b. Higiene > 2 horas',
+            'item4c': '4c. Higiene > 4 horas',
+            'item5': '5. Cuidados de drenaje',
+            'item6': '6a. Movilización cada 2-4 horas (1 enfermera)',
+            'item6b': '6b. Movilización más de 3 veces por turno (2 enfermeras)',
+            'item6c': '6c. Movilización (3+ enfermeras)',
+            'item7': '7a. Apoyo familiar al menos 1 hora',
+            'item7b': '7b. Apoyo familiar al menos 3 horas en un turno (no sumado en 4 turnos)',
+            'item8': '8a. Tareas administrativas rutinarias',
+            'item8b': '8b. Tareas administrativas 2 horas',
+            'item8c': '8c. Tareas administrativas 4+ horas',
+            'item9': '9. Soporte respiratorio',
+            'item10': '10. Cuidados de vía aérea artificial',
+            'item11': '11. Tratamiento para mejorar función pulmonar',
+            'item12': '12. Medicación vasoactiva',
+            'item13': '13. Reposición intravenosa de altas dosis de fluidos',
+            'item14': '14. Monitorización de aurícula izquierda',
+            'item15': '15. Resucitación cardiopulmonar',
+            'item16': '16. Técnicas de hemofiltración',
+            'item17': '17. Mediciones cuantitativas de orina',
+            'item18': '18. Soporte de presión intracraneal PIC + PPC',
+            'item19': '19. Tratamiento de complicaciones metabólicas',
+            'item20': '20. Nutrición parenteral',
+            'item21': '21. Alimentación enteral',
+            'item22': '22. Intervenciones específicas en UCI',
+            'item23': '23. Intervenciones fuera de UCI'
+        };
+        
+        // Variables para almacenar datos
+        let selectedItems = [];
+        
+        // Función para calcular el puntaje total
+        function calculateTotalScore() {
+            let total = 0;
+            selectedItems = [];
+            
+            const itemNames = Object.keys(itemNamesMap);
+            
+            itemNames.forEach(itemName => {
+                const selectedRadio = document.querySelector(`input[name="${itemName}"]:checked`);
+                if (selectedRadio && selectedRadio.value !== "0") {
+                    const points = parseFloat(selectedRadio.value);
+                    total += points;
+                    selectedItems.push({
+                        name: itemNamesMap[itemName],
+                        points: points
+                    });
+                }
+            });
+            
+            return total;
+        }
+        
+        // Función para calcular el porcentaje NAS (sobre 177 puntos máximos)
+        function calculatePercentage(score) {
+            if (score === 0) return 0;
+            return (score / MAX_NAS_SCORE) * 100;
+        }
+        
+        // Función para calcular horas de enfermería requeridas
+        // Horas = (Porcentaje NAS × 24) / 100
+        function calculateNursingHours(percentage) {
+            return (percentage * 24) / 100;
+        }
+        
+        // Función para clasificar al paciente según el porcentaje NAS
+        function classifyPatient(percentage) {
+            if (percentage === 0) return { text: "Sin selección", class: "status-low" };
+            if (percentage <= 25) return { text: "Baja complejidad", class: "status-low" };
+            if (percentage <= 50) return { text: "Complejidad moderada", class: "status-medium" };
+            if (percentage <= 75) return { text: "Alta complejidad", class: "status-high" };
+            return { text: "Muy alta complejidad", class: "status-very-high" };
+        }
+        
+        // Función para recomendación de dotación según puntaje NAS
+        function getStaffingRecommendation(score) {
+            if (score === 0) return "No calculado";
+            if (score <= 25) return "1 enfermero puede atender 4 pacientes así";
+            if (score <= 50) return "1 enfermero puede atender 2 pacientes así";
+            if (score <= 75) return "1 enfermero puede atender 1 paciente así";
+            if (score <= 100) return "1 enfermero dedicado exclusivamente";
+            return "Requiere 1.5 enfermeros (apoyo adicional)";
+        }
+        
+        // Función para actualizar la lista de ítems seleccionados
+        function updateSelectedItemsList() {
+            const container = document.getElementById('selectedItemsContainer');
+            
+            if (selectedItems.length === 0) {
+                container.innerHTML = '<div style="padding: 10px; text-align: center; color: var(--text-light);">No hay ítems seleccionados</div>';
+                return;
+            }
+            
+            let html = '';
+            selectedItems.forEach(item => {
+                html += `
+                    <div class="selected-item">
+                        <div class="selected-item-name">${item.name}</div>
+                        <div class="selected-item-points">${item.points.toFixed(1)} pts</div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        // Función para generar el resumen simplificado
+        function generateSummary() {
+            const score = calculateTotalScore();
+            const percentage = calculatePercentage(score);
+            const classification = classifyPatient(percentage);
+            const nursingHours = calculateNursingHours(percentage);
+            
+            const patientName = document.getElementById('patientName').value || 'No especificado';
+            const patientAge = document.getElementById('patientAge').value || '';
+            const ageUnit = document.getElementById('ageUnit').value || 'años';
+            const patientHC = document.getElementById('patientHC').value || 'No especificado';
+            const patientService = document.getElementById('patientService').value || 'No especificado';
+            const patientBed = document.getElementById('patientBed').value || 'No especificado';
+            const nasDate = document.getElementById('nasDate').value || new Date().toISOString().split('T')[0];
+            const nasTime = document.getElementById('nasTime').value || new Date().toTimeString().split(' ')[0].substring(0,5);
+            
+            // Formatear fecha en español
+            const dateObj = new Date(nasDate);
+            const formattedDate = dateObj.toLocaleDateString('es-ES', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+            
+            // Preparar edad completa
+            const ageComplete = patientAge ? `${patientAge} ${ageUnit}` : 'No especificada';
+            
+            let summary = `RESUMEN DE EVALUACIÓN NAS
+================================================================
+
+DATOS DEL PACIENTE:
+• Nombre: ${patientName}
+• Edad: ${ageComplete}
+• H.C./DNI: ${patientHC}
+• Servicio: ${patientService}
+• Cama: ${patientBed}
+• Fecha evaluación: ${formattedDate}
+• Hora evaluación: ${nasTime}
+
+================================================================
+
+ÍTEMS NAS SELECCIONADOS:
+`;
+            
+            if (selectedItems.length === 0) {
+                summary += "No se han seleccionado ítems.\n";
+            } else {
+                selectedItems.forEach(item => {
+                    summary += `• ${item.name}: ${item.points.toFixed(1)} puntos\n`;
+                });
+            }
+            
+            summary += `
+================================================================
+
+RESULTADOS:
+• Puntaje NAS: ${score.toFixed(1)} puntos (máximo teórico: ${MAX_NAS_SCORE} pts)
+• Porcentaje NAS: ${percentage.toFixed(1)}%
+• Horas de enfermería requeridas (24h): ${nursingHours.toFixed(1)} horas
+• Clasificación: ${classification.text}
+• Recomendación de dotación: ${getStaffingRecommendation(score)}
+
+================================================================
+FÓRMULAS UTILIZADAS:
+• %NAS = (Puntaje × 100) / ${MAX_NAS_SCORE}
+• Horas enfermería = (%NAS × 24) / 100
+`;
+            
+            return summary;
+        }
+        
+        // Función para actualizar el resumen
+        function updateSummary() {
+            const summaryContent = document.getElementById('summaryContent');
+            summaryContent.textContent = generateSummary();
+        }
+        
+        // Función para copiar el resumen al portapapeles
+        function copySummary() {
+            const summaryContent = document.getElementById('summaryContent');
+            const textArea = document.createElement('textarea');
+            textArea.value = summaryContent.textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            // Mostrar feedback
+            const copyBtn = document.querySelector('.btn-copy');
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = '¡Copiado!';
+            copyBtn.classList.add('copied');
+            
+            setTimeout(() => {
+                copyBtn.textContent = originalText;
+                copyBtn.classList.remove('copied');
+            }, 2000);
+        }
+        
+        // Función para actualizar todos los resultados
+        function updateResults() {
+            const score = calculateTotalScore();
+            const percentage = calculatePercentage(score);
+            const classification = classifyPatient(percentage);
+            const nursingHours = calculateNursingHours(percentage);
+            
+            // Actualizar puntaje
+            document.getElementById('totalScore').textContent = score.toFixed(1);
+            
+            // Actualizar porcentaje NAS
+            document.getElementById('percentageNAS').textContent = percentage.toFixed(1) + '%';
+            
+            // Actualizar horas de enfermería
+            document.getElementById('nursingHours').textContent = nursingHours.toFixed(1) + ' horas';
+            
+            // Actualizar clasificación con indicador
+            const classificationElement = document.getElementById('patientClassification');
+            classificationElement.innerHTML = `<span class="status-indicator ${classification.class}"></span>${classification.text}`;
+            
+            // Actualizar recomendación de dotación
+            document.getElementById('staffingRecommendation').textContent = getStaffingRecommendation(score);
+            
+            // Actualizar lista de ítems seleccionados
+            updateSelectedItemsList();
+            
+            // Actualizar resumen
+            updateSummary();
+        }
+        
+        // Función para manejar la exclusión de items
+        function handleExclusions(changedItemName) {
+            const selectedRadio = document.querySelector(`input[name="${changedItemName}"]:checked`);
+            
+            if (!selectedRadio || selectedRadio.value === "0") {
+                checkAndEnableAllGroups();
+                return;
+            }
+            
+            if (exclusionGroups[changedItemName]) {
+                exclusionGroups[changedItemName].forEach(itemToDisable => {
+                    const groupElement = document.getElementById(`group${itemToDisable.replace('item', '')}`);
+                    if (groupElement) {
+                        groupElement.classList.add('disabled');
+                        
+                        const radios = groupElement.querySelectorAll('input[type="radio"]');
+                        radios.forEach(radio => {
+                            radio.disabled = true;
+                        });
+                        
+                        const checkedRadio = groupElement.querySelector('input[type="radio"]:checked');
+                        if (checkedRadio) {
+                            checkedRadio.checked = false;
+                            const noAplicaRadio = groupElement.querySelector('input[type="radio"][value="0"]');
+                            if (noAplicaRadio) {
+                                noAplicaRadio.checked = true;
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        
+        // Función para verificar y habilitar todos los grupos
+        function checkAndEnableAllGroups() {
+            document.querySelectorAll('.item-group').forEach(group => {
+                group.classList.remove('disabled');
+                
+                const radios = group.querySelectorAll('input[type="radio"]');
+                radios.forEach(radio => {
+                    radio.disabled = false;
+                });
+            });
+            
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                if (radio.checked && radio.value !== "0") {
+                    const itemName = radio.name;
+                    if (exclusionGroups[itemName]) {
+                        exclusionGroups[itemName].forEach(itemToDisable => {
+                            const groupElement = document.getElementById(`group${itemToDisable.replace('item', '')}`);
+                            if (groupElement) {
+                                groupElement.classList.add('disabled');
+                                
+                                const radios = groupElement.querySelectorAll('input[type="radio"]');
+                                radios.forEach(r => {
+                                    r.disabled = true;
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+        }
+        
+        // Función para reiniciar toda la calculadora
+        function resetAll() {
+            // Desmarcar todos los radio buttons
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.checked = false;
+            });
+            
+            // Marcar "No aplica" en todos
+            document.querySelectorAll('input[type="radio"][value="0"]').forEach(radio => {
+                radio.checked = true;
+            });
+            
+            // Limpiar campos de información del paciente
+            document.getElementById('patientName').value = '';
+            document.getElementById('patientAge').value = '';
+            document.getElementById('ageUnit').value = 'años';
+            document.getElementById('patientHC').value = '';
+            document.getElementById('patientService').value = '';
+            document.getElementById('patientBed').value = '';
+            
+            // Restablecer fecha y hora actual
+            const now = new Date();
+            document.getElementById('nasDate').value = now.toISOString().split('T')[0];
+            document.getElementById('nasTime').value = now.toTimeString().split(' ')[0].substring(0,5);
+            
+            // Habilitar todos los grupos
+            checkAndEnableAllGroups();
+            
+            // Eliminar estilos seleccionados de radio buttons
+            document.querySelectorAll('.radio-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Actualizar resultados
+            updateResults();
+            
+            // Mostrar mensaje de confirmación
+            alert("Calculadora reiniciada correctamente. Todos los campos han sido limpiados.");
+        }
+        
+        // Agregar event listeners a todos los radio buttons
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const itemName = this.name;
+                
+                // Actualizar estilos visuales
+                document.querySelectorAll(`input[name="${itemName}"]`).forEach(r => {
+                    const label = r.closest('.radio-option');
+                    if (r.checked && r.value !== "0") {
+                        label.classList.add('selected');
+                    } else {
+                        label.classList.remove('selected');
+                    }
+                });
+                
+                handleExclusions(itemName);
+                updateResults();
+            });
+        });
+        
+        // Agregar event listeners a los campos de información del paciente
+        document.querySelectorAll('#patientName, #patientAge, #ageUnit, #patientHC, #patientService, #patientBed, #nasDate, #nasTime').forEach(field => {
+            field.addEventListener('input', updateResults);
+            field.addEventListener('change', updateResults);
+        });
+        
+        // Inicializar estilos de radio buttons seleccionados
+        document.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
+            if (radio.value !== "0") {
+                const label = radio.closest('.radio-option');
+                if (label) label.classList.add('selected');
+            }
+        });
+        
+        // Inicializar resultados
+        updateResults();
+        
+        // Aplicar exclusión inicial si hay items pre-seleccionados
+        document.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
+            if (radio.value !== "0") {
+                handleExclusions(radio.name);
+            }
+        });
+        
+        // Establecer fecha y hora actual por defecto
+        window.onload = function() {
+            const now = new Date();
+            const currentDate = now.toISOString().split('T')[0];
+            const currentTime = now.toTimeString().split(' ')[0].substring(0,5);
+            
+            if (!document.getElementById('nasDate').value) {
+                document.getElementById('nasDate').value = currentDate;
+            }
+            
+            if (!document.getElementById('nasTime').value) {
+                document.getElementById('nasTime').value = currentTime;
+            }
+            
+            updateResults();
+        };
+    </script>
+</body>
+</html>
